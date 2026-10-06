@@ -1,6 +1,6 @@
 {
   "name": "typo-picker",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "description": "Flag typos in the prompt box (rules file + Opus 5.5 check) and pick a fix from the band above the prompt, /typo to add rules",
   "types": "./types/index.d.ts",

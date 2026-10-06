@@ -111,6 +111,9 @@ const ignored = new Set<string>()
 
 // The model's latest answer, re-located in the draft on every scan.
 let modelSuggestions: Rule[] = []
+// AI fixes the person picked that still hold their typo (e.g. "mu" -> "mu's"), keyed by the typo.
+// They outlive later model replies and reset when the prompt is submitted.
+let acceptedFixes = new Map<string, Set<string>>()
 let modelState = '待命'
 let lastChecked = ''
 let pending: Timer | undefined
@@ -184,6 +187,17 @@ function parseArray(json: string): Rule[] | null {
   }
 }
 
+const WORD_CHAR = /[A-Za-z0-9_]/
+
+// An English word matches only whole: "mu" is not flagged inside "much".
+// The check runs only on an edge that is itself a word character, so Chinese matches as before.
+function isWhole(text: string, at: number, end: number) {
+  const startsWord = WORD_CHAR.test(text[at] ?? '')
+  const endsWord = WORD_CHAR.test(text[end - 1] ?? '')
+
+  return !(startsWord && WORD_CHAR.test(text[at - 1] ?? '')) && !(endsWord && WORD_CHAR.test(text[end] ?? ''))
+}
+
 // Every match in the draft, the one nearest before the cursor first.
 // A model finding that overlaps a table finding is dropped: the table wins.
 function scan(text: string, cursor: number): Finding[] {
@@ -205,7 +219,7 @@ function scan(text: string, cursor: number): Finding[] {
         const end = at + wrong.length
         const overlaps = found.some(f => at < f.end && f.start < end)
 
-        if (!overlaps) {
+        if (!overlaps && isWhole(text, at, end) && !(source === 'model' && insideFix(text, at, wrong))) {
           found.push({ start: at, end, wrong, candidates, source })
         }
 
@@ -222,6 +236,19 @@ function scan(text: string, cursor: number): Finding[] {
   return active ? [active, ...found.filter(f => f !== active)] : []
 }
 
+// True when the match at `at` sits inside a fix the person already picked for this typo.
+function insideFix(text: string, at: number, wrong: string) {
+  for (const fix of acceptedFixes.get(wrong) ?? []) {
+    for (let k = fix.indexOf(wrong); k !== -1; k = fix.indexOf(wrong, k + 1)) {
+      if (text.startsWith(fix, at - k)) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
 function paint(findings: Finding[]): PromptDecoration[] {
   return findings.map((f, i) => ({
     start: f.start,
@@ -232,7 +259,14 @@ function paint(findings: Finding[]): PromptDecoration[] {
   }))
 }
 
+// Replaces the finding with the chosen candidate.
+// A picked AI fix that still holds the typo (e.g. "mu" -> "mu's") is remembered, so it is not flagged again.
+// The AI rule stays, so other copies of the typo keep their underline.
 function splice(text: string, cursor: number, f: Finding, choice: string) {
+  if (f.source === 'model' && choice.includes(f.wrong)) {
+    acceptedFixes.set(f.wrong, (acceptedFixes.get(f.wrong) ?? new Set()).add(choice))
+  }
+
   const next = text.slice(0, f.start) + choice + text.slice(f.end)
   const shift = choice.length - (f.end - f.start)
 
@@ -474,6 +508,7 @@ export const register: Register = on => {
     pending?.cancel()
     inflight?.abort()
     modelSuggestions = []
+    acceptedFixes = new Map()
     lastChecked = ''
     modelState = '待命'
     await update($, findingsAtom, () => [])
