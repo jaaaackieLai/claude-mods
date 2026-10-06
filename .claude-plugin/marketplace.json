@@ -1,0 +1,29 @@
+{
+  "name": "claude-mods",
+  "description": "jacky's Claude Code mods: pick the ones you want from /plugin",
+  "owner": {
+    "name": "jacky"
+  },
+  "plugins": [
+    {
+      "name": "usage",
+      "source": "./plugins/usage",
+      "description": "輸入列上方的用量列：模型、effort、資料夾、git 分支、context、5h 和 7d 額度，加上 /limits 和 /ctx"
+    },
+    {
+      "name": "agent-monitor",
+      "source": "./plugins/agent-monitor",
+      "description": "子代理監看：輸入列上方顯示子代理摘要列，/agent-monitor 開關面板，列出模型、context、token、估計費用和時間"
+    },
+    {
+      "name": "todo-calendar",
+      "source": "./plugins/todo-calendar",
+      "description": "TODO 週曆面板：在面板顯示一週任務，由 Claude 用工具新增與修改任務"
+    },
+    {
+      "name": "typo-picker",
+      "source": "./plugins/typo-picker",
+      "description": "注音選錯字：輸入列畫底線，上方跳出候選字，點一下就換掉；錯字表加 AI 檢查"
+    }
+  ]
+}

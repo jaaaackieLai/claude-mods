@@ -1,0 +1,10 @@
+{
+  "name": "agent-monitor",
+  "version": "0.2.0",
+  "license": "MIT",
+  "description": "子代理監看：prompt 上方顯示子代理摘要列，/agent-monitor 開關面板，列出模型、context、token、估計費用和時間。",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "jacky"
+  }
+}

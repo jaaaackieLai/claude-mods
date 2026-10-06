@@ -1,0 +1,11 @@
+{
+  "name": "typo-picker",
+  "version": "1.0.3",
+  "license": "MIT",
+  "description": "Flag typos in the prompt box (rules file + Opus 5.5 check) and pick a fix from the band above the prompt, /typo to add rules",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "jacky"
+  },
+  "keywords": ["typo", "spellcheck", "prompt", "chinese", "zhuyin"]
+}

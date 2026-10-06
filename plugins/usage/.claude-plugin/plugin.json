@@ -1,0 +1,10 @@
+{
+  "name": "usage",
+  "version": "0.9.0",
+  "license": "MIT",
+  "description": "Model, folder, git branch/worktree, context and rate-limit band above the prompt, with threshold toasts, /limits and a /ctx pane",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "jacky"
+  }
+}

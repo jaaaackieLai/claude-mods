@@ -1,0 +1,16 @@
+{
+  "name": "todo-calendar",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "TODO 週曆面板：在面板顯示一週任務，由 Claude 用工具新增與修改任務",
+  "author": { "name": "jacky" },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "autoOpen": {
+      "type": "boolean",
+      "title": "新 session 自動開啟面板",
+      "description": "開啟時，每個新 session 開始都會打開 TODO 週曆面板。關閉時用 /todo 手動開啟。也可以用 /todo auto on 或 /todo auto off 切換。",
+      "default": true
+    }
+  }
+}
