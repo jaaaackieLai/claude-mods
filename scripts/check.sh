@@ -2,7 +2,7 @@
 # Checks the marketplace and every mod in plugins/, then the conflicts between mods.
 # Run it before every release: sh scripts/check.sh
 #
-# Why no test loads all four mods at once: `claude plugin test` only loads
+# Why no test loads all the mods at once: `claude plugin test` only loads
 # self-contained inline plugins beside the one under test, and a real mod's
 # register uses helpers from its own file. So each mod that draws above the
 # prompt has its own test proving it keeps the rows of the mods beneath it.

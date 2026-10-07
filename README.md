@@ -17,6 +17,7 @@
 | **agent-monitor** | 子代理在跑時，輸入列上方顯示摘要列。`/agent-monitor` 開面板，列出每個子代理的模型、context、token、估計費用和時間 | [README](plugins/agent-monitor/README.md) |
 | **todo-calendar** | 面板顯示一週的待辦。打 `/todo` 開面板，也可以請 Claude 幫你新增或修改任務 | [README](plugins/todo-calendar/README.md) |
 | **typo-picker** | 打錯字時畫底線，輸入列上方跳出候選字，點一下就換掉 | [README](plugins/typo-picker/README.md) |
+| **gold-fish** | 自動記住工作堆疊，輸入列上方的金魚列顯示主線和支線。支線結束時，提醒你回到主線 | [README](plugins/gold-fish/README.md) |
 
 
 ## 安裝
@@ -39,7 +40,7 @@ claude plugin marketplace add jaaaackieLai/claude-mods
 claude plugin install usage@claude-mods
 ```
 
-把 `usage` 換成 `agent-monitor`、`todo-calendar` 或 `typo-picker`，就能裝其他 mod。
+把 `usage` 換成 `agent-monitor`、`todo-calendar`、`typo-picker` 或 `gold-fish`，就能裝其他 mod。
 
 **更新**：在終端機執行 `claude plugin marketplace update claude-mods`，然後開一個新 session。
 
