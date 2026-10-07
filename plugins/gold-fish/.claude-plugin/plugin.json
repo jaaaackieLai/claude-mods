@@ -1,6 +1,6 @@
 {
   "name": "gold-fish",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "description": "金魚列：自動記住工作堆疊，輸入列上方顯示主線和支線，收支線後提醒回主線",
   "author": { "name": "jacky" },

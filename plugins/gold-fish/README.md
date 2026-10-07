@@ -102,6 +102,7 @@ claude plugin install gold-fish@claude-mods
 
 - 你每送出一則訊息，gold-fish 把目前的工作堆疊和使用規則附給 Claude。你看不到這段文字
 - Claude 用 4 個工具改工作堆疊：`push_work_item`、`close_work_item`、`rename_work_item`、`remove_work_item`
+- 這 4 個工具在對話紀錄裡只顯示一行淡色字，例如「🐟 已開支線：w2 …」。工具失敗時改成紅字「🐟 失敗：…」
 - 收起最底層的主線時，工作堆疊變空，金魚列直接隱藏，不顯示回主線提醒
 - 金魚列不設快捷鍵，避免和 `typo-picker` 的選字列衝突。它和其他 mod 的列一起顯示
 

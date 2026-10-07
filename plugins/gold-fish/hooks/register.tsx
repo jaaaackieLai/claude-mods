@@ -44,6 +44,11 @@ const MORE = '更多…'
 /** 使用者自己送出的訊息。其他來源（通知、排程、其他 session）不清掉回主線提醒 */
 const USER_ORIGINS: readonly string[] = ['composer', 'bridge', 'sdk']
 
+/** transcript 裡 gold-fish 工具的列 */
+const TOOL_PREFIX = 'mcp__gold-fish__'
+const FISH = '🐟'
+const FAIL_COLOR = '#FF5F5F'
+
 const EMPTY: Stack = { items: [], lastId: 0 }
 
 const stackAtom = atom({ plugin: 'gold-fish', key: 'stack' } as const, EMPTY)
@@ -63,6 +68,23 @@ const stackPath = async ($: EngineInterface, session: string): Promise<string> =
   const home = (await $.env.get('USERPROFILE')) || (await $.env.get('HOME')) || ''
 
   return `${home.replace(/[\\/]+$/, '')}/.claude/${file}`
+}
+
+/** 工具還在執行時，列上寫的動作和對象 */
+const runningText = (name: string, input: Args): string => {
+  const title = str(input.title)
+  const id = str(input.id)
+  if (name === 'push_work_item') {
+    return `開工作項：${title}…`
+  }
+  if (name === 'close_work_item') {
+    return `收工作項：${id ?? '最上層'}…`
+  }
+  if (name === 'rename_work_item') {
+    return `改標題：${id} ${title}…`
+  }
+
+  return `刪除工作項：${id}…`
 }
 
 const isFailure = (value: object): value is Failure => 'error' in value
@@ -402,6 +424,40 @@ export const register: Register = on => {
     }
 
     return next(e)
+  })
+
+  // transcript 裡 gold-fish 工具的列縮成一行淡色字，金魚列已經顯示整個工作堆疊
+  on('ui.render', { component: 'ToolUse' }, async ($, e, next) => {
+    const { tool, input, output, isRunning, isErrored, isInterrupted } = e.props
+    // 中斷時照引擎原本的畫法，它會寫 Interrupted
+    if (!tool.startsWith(TOOL_PREFIX) || isInterrupted) {
+      return next(e)
+    }
+    const { Text } = $.ui.resolve(e)
+    if (isRunning) {
+      return <Text dimColor>{`${FISH} ${runningText(tool.slice(TOOL_PREFIX.length), input as Args)}`}</Text>
+    }
+    if (typeof output !== 'string') {
+      return next(e)
+    }
+    // 引擎畫列時，answer 回傳的 isError 不一定變成 isErrored。成功的結果後面一定附上工作堆疊，
+    // 所以只有一行的結果也是失敗
+    const [first, ...rest] = output.split('\n')
+    if (isErrored || rest.length === 0) {
+      return <Text color={FAIL_COLOR}>{`${FISH} 失敗：${first}`}</Text>
+    }
+
+    return <Text dimColor>{`${FISH} ${first}`}</Text>
+  })
+
+  // 工具結果已經畫在工具列上，結果區塊不畫
+  on('ui.render', { component: 'ToolResult' }, async ($, e, next) => {
+    if (!e.props.tool.startsWith(TOOL_PREFIX) || typeof e.props.output !== 'string') {
+      return next(e)
+    }
+    const { Box } = $.ui.resolve(e)
+
+    return <Box />
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
