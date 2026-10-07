@@ -24,6 +24,11 @@
       "name": "typo-picker",
       "source": "./plugins/typo-picker",
       "description": "注音選錯字：輸入列畫底線，上方跳出候選字，點一下就換掉；錯字表加 AI 檢查"
+    },
+    {
+      "name": "gold-fish",
+      "source": "./plugins/gold-fish",
+      "description": "金魚列：自動記住工作堆疊，輸入列上方顯示主線和支線，收支線後提醒回主線"
     }
   ]
 }
